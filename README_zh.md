@@ -16,8 +16,8 @@ $ go get github.com/ml444/swaggerapi
 package main
 
 import (
-	"github.com/ml444/gkit/log"
-	"github.com/ml444/gkit/transport/httpx"
+    "github.com/ml444/gkit/log"
+    "github.com/ml444/gkit/transport/httpx"
     "github.com/ml444/swaggerapi"
 )
 
@@ -28,7 +28,7 @@ func main() {
 		httpx.Address(hcfg.HTTPAddr),
 	)
 	// Create a new SwaggerAPI instance
-	swaggerapi.RegisterApi(srv)
+	swaggerapi.RegisterAPI(srv)
 	
 	// Register your API handlers
 	//userpb.RegisterServerWithHTTP(srv)

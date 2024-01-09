@@ -12,12 +12,12 @@ window.onload = function () {
         return true;
     }
 
-    const servicesUrl = new URL("/query/services", window.location.href);
+    const servicesUrl = new URL("/swagger-query/services", window.location.href);
     fetch(servicesUrl.toString())
         .then(response => response.json())
         .then(data => {
             const urls = data.services.filter(x => excludeServiceName(x)).map((x) => {
-                const url = new URL("/query/service/" + x, window.location.href);
+                const url = new URL("/swagger-query/service/" + x, window.location.href);
                 return {url: url.toString(), name: x}
             });
             console.log(urls)
