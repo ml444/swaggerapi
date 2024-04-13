@@ -2,6 +2,19 @@ package generator
 
 type Option func(gen *Generator)
 
+// DescriptorFilePath: @usage: generator.DescriptorFilePath("myapp.proto", "pkg/mygroup/myapp.descriptor.pb")
+func DescriptorFilePath(protoName, descriptorFile string) Option {
+	return func(gen *Generator) {
+		gen.registry.AddDescriptorMap(protoName, descriptorFile)
+	}
+}
+
+func PreserveRPCOrder() Option {
+	return func(gen *Generator) {
+		gen.registry.SetPreserveRPCOrder(true)
+	}
+}
+
 func AllowDeleteBody(b bool) Option {
 	return func(gen *Generator) {
 		gen.registry.SetAllowDeleteBody(b)

@@ -6,8 +6,6 @@ import (
 	"strings"
 
 	//"github.com/ml444/swaggerapi/github.com/ml444/swaggerapi/options"
-	"github.com/ml444/swaggerapi/generator/descriptor/openapiconfig"
-	"github.com/ml444/swaggerapi/generator/options"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"google.golang.org/genproto/googleapis/api/annotations"
@@ -15,6 +13,9 @@ import (
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/pluginpb"
+
+	"github.com/ml444/swaggerapi/generator/descriptor/openapiconfig"
+	"github.com/ml444/swaggerapi/generator/options"
 )
 
 // Registry is a registry of information extracted from pluginpb.CodeGeneratorRequest.
@@ -39,6 +40,9 @@ type Registry struct {
 
 	// pkgAliases is a mapping from package aliases to package paths in go which are already taken.
 	pkgAliases map[string]string
+
+	// DescriptorFileMap is a user-specified mapping from proto filename to the path of descriptor file.
+	DescriptorFileMap map[string]string
 
 	// allowDeleteBody permits http delete methods to have a body
 	allowDeleteBody bool
@@ -434,6 +438,13 @@ func (r *Registry) AddPkgMap(file, protoPkg string) {
 // SetPrefix registers the prefix to be added to go package paths generated from proto package names.
 func (r *Registry) SetPrefix(prefix string) {
 	r.prefix = prefix
+}
+
+func (r *Registry) AddDescriptorMap(protoName, descriptorSets string) {
+	if r.DescriptorFileMap == nil {
+		r.DescriptorFileMap = make(map[string]string)
+	}
+	r.DescriptorFileMap[protoName] = descriptorSets
 }
 
 // SetStandalone registers standalone flag to control package prefix

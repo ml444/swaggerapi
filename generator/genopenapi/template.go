@@ -16,9 +16,6 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/ml444/swaggerapi/generator/descriptor"
-	"github.com/ml444/swaggerapi/generator/descriptor/casing"
-	openapi_options "github.com/ml444/swaggerapi/generator/options"
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/genproto/googleapis/api/visibility"
 	"google.golang.org/grpc/grpclog"
@@ -26,6 +23,10 @@ import (
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/known/structpb"
+
+	"github.com/ml444/swaggerapi/generator/descriptor"
+	"github.com/ml444/swaggerapi/generator/descriptor/casing"
+	openapi_options "github.com/ml444/swaggerapi/generator/options"
 )
 
 // The OpenAPI specification does not allow for more than one endpoint with the same HTTP method and path.
@@ -2443,8 +2444,18 @@ func enumValueProtoComments(reg *descriptor.Registry, enum *descriptor.Enum) str
 
 func protoComments(reg *descriptor.Registry, file *descriptor.File, outers []string, typeName string, typeIndex int32, fieldPaths ...int32) string {
 	if file.SourceCodeInfo == nil {
-		//fmt.Fprintln(os.Stderr, file.GetName(), "descriptor.File should not contain nil SourceCodeInfo")
-		return ""
+		descriptorPath, ok := reg.DescriptorFileMap[file.GetName()]
+		if !ok {
+			//fmt.Fprintln(os.Stderr, file.GetName(), "descriptor.File should not contain nil SourceCodeInfo")
+			return ""
+		}
+		set := descriptorpb.FileDescriptorSet{}
+		f, _ := os.ReadFile(descriptorPath)
+		if err := proto.Unmarshal(f, &set); err == nil {
+			println(err.Error())
+			return ""
+		}
+		file.SourceCodeInfo = set.File[0].SourceCodeInfo
 	}
 
 	outerPaths := make([]int32, len(outers))
