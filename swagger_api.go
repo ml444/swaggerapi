@@ -12,15 +12,15 @@ import (
 var dist embed.FS
 
 type Router interface {
-	HandlePrefix(method, prefix string, h http.Handler)
-	HandleFunc(method, path string, h http.HandlerFunc)
+	HandlePrefix(prefix string, h http.Handler)
+	HandleFunc(path string, h http.HandlerFunc)
 }
 
 func RegisterAPI(r Router, opts ...generator.Option) {
 	ss := NewServer(opts...)
-	r.HandlePrefix(http.MethodGet, "/swagger/", NewSwaggerHandler())
-	r.HandlePrefix(http.MethodGet, "/swagger-query/service/{name}", http.Handler(http.HandlerFunc(ss.GetServiceDesc)))
-	r.HandleFunc(http.MethodGet, "/swagger-query/services", ss.ListServices)
+	r.HandlePrefix("/swagger/", NewSwaggerHandler())
+	r.HandlePrefix("/swagger-query/service/{name}", http.Handler(http.HandlerFunc(ss.GetServiceDesc)))
+	r.HandleFunc("/swagger-query/services", ss.ListServices)
 }
 
 func NewSwaggerHandler() http.Handler {
