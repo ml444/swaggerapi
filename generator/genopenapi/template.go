@@ -2451,8 +2451,11 @@ func protoComments(reg *descriptor.Registry, file *descriptor.File, outers []str
 		}
 		set := descriptorpb.FileDescriptorSet{}
 		f, _ := os.ReadFile(descriptorPath)
-		if err := proto.Unmarshal(f, &set); err == nil {
+		if err := proto.Unmarshal(f, &set); err != nil {
 			println(err.Error())
+			return ""
+		}
+		if len(set.File) == 0 {
 			return ""
 		}
 		file.SourceCodeInfo = set.File[0].SourceCodeInfo
