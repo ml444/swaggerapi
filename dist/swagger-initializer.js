@@ -11,13 +11,23 @@ window.onload = function () {
         }
         return true;
     }
+    var currentPath = window.location.pathname;
+    // 使用正则表达式匹配路径，剔除包含 'swagger' 的部分
+    var apiPrefix = currentPath.replace(/\/swagger\/?.*$/, '');
+    let servicesUrl = new URL("/swagger-query/services", window.location.href);
+    if (apiPrefix.length > 0) {
+        console.log("当前页面的 API 前缀为: " + apiPrefix);
+        servicesUrl = new URL(apiPrefix + "/swagger-query/services", window.location.href);
+    }
 
-    const servicesUrl = new URL("/swagger-query/services", window.location.href);
     fetch(servicesUrl.toString())
         .then(response => response.json())
         .then(data => {
             const urls = data.services.filter(x => excludeServiceName(x)).map((x) => {
-                const url = new URL("/swagger-query/service/" + x, window.location.href);
+                let url = new URL("/swagger-query/service/" + x, window.location.href);
+                if (apiPrefix.length > 0) {
+                    url = new URL(apiPrefix + "/swagger-query/service/" + x, window.location.href);
+                }
                 return {url: url.toString(), name: x}
             });
             console.log(urls)
