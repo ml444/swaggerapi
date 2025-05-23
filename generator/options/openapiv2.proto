@@ -4,7 +4,7 @@ package grpc.gateway.protoc_gen_openapiv2.options;
 
 import "google/protobuf/struct.proto";
 
-option go_package = "github.com/ml444/swaggerapi/github.com/ml444/swaggerapi/options";
+option go_package = "github.com/ml444/swaggerapi/generator/options";
 
 // Scheme describes the schemes supported by the OpenAPI Swagger
 // and Operation objects.
